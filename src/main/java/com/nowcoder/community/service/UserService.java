@@ -45,6 +45,7 @@ public class UserService implements CommunityConstant {
     }
 
     public Map<String, Object> register(User user) {
+
         Map<String, Object> map = new HashMap<>();
 
         // 空值处理

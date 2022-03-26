@@ -5,11 +5,17 @@
 <mapper namespace="com.nowcoder.community.dao.DiscussPostMapper">
 
     <sql id="selectFields">
-        id, user_id, title, content, type, status, create_time, comment_count, score
+        id
+        , user_id, title, content, type, status, create_time, comment_count, score
     </sql>
 
+    <!--  (userId可以传入也可以不传入，传入userId肯定不为0，则擦汗寻某个用户的帖子；
+            不传入表示查询所有用户)
+            查询的帖子(status != 2 表示：未拉黑)
+    -->
     <select id="selectDiscussPosts" resultType="DiscussPost">
-        select <include refid="selectFields"></include>
+        select
+        <include refid="selectFields"></include>
         from discuss_post
         where status != 2
         <if test="userId!=0">
@@ -19,6 +25,7 @@
         limit #{offset}, #{limit}
     </select>
 
+    <!--  查询有多少条帖子(未拉黑)  -->
     <select id="selectDiscussPostRows" resultType="int">
         select count(id)
         from discuss_post
