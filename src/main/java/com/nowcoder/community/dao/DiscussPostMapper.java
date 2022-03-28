@@ -9,30 +9,14 @@ import java.util.List;
 @Mapper
 public interface DiscussPostMapper {
 
-    /**
-     * 分页查询帖子
-     *
-     * @param userId 查询ID
-     * @param offset 开始索引
-     * @param limit 一页多少条记录
-     * @return
-     */
     List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
 
-    /**
-     * 查询用户的帖子
-     * @Param注解用于给定参数取别名
-     * 如果只有一个参数，并且在<if></if>里面使用，则必须加别名
-     * @param userId
-     * @return
-     */
+    // @Param注解用于给参数取别名,
+    // 如果只有一个参数,并且在<if>里使用,则必须加别名.
     int selectDiscussPostRows(@Param("userId") int userId);
 
-    /**
-     * 添加帖子
-     * @param discussPost 帖子对象
-     * @return 成功的条数
-     */
     int insertDiscussPost(DiscussPost discussPost);
+
+    DiscussPost selectDiscussPostById(int id);
 
 }
