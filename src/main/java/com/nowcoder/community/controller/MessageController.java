@@ -7,6 +7,8 @@ import com.nowcoder.community.service.MessageService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,8 @@ import java.util.*;
 
 @Controller
 public class MessageController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
 
     @Autowired
     private MessageService messageService;
@@ -33,14 +37,14 @@ public class MessageController {
     @RequestMapping(path = "/letter/list", method = RequestMethod.GET)
     public String getLetterList(Model model, Page page) {
         User user = hostHolder.getUser();
+
         // 分页信息
         page.setLimit(5);
         page.setPath("/letter/list");
         page.setRows(messageService.findConversationCount(user.getId()));
 
         // 会话列表
-        List<Message> conversationList = messageService.findConversations(
-                user.getId(), page.getOffset(), page.getLimit());
+        List<Message> conversationList = messageService.findConversations(user.getId(), page.getOffset(), page.getLimit());
         List<Map<String, Object>> conversations = new ArrayList<>();
         if (conversationList != null) {
             for (Message message : conversationList) {
@@ -50,7 +54,6 @@ public class MessageController {
                 map.put("unreadCount", messageService.findLetterUnreadCount(user.getId(), message.getConversationId()));
                 int targetId = user.getId() == message.getFromId() ? message.getToId() : message.getFromId();
                 map.put("target", userService.findUserById(targetId));
-
                 conversations.add(map);
             }
         }
@@ -63,6 +66,7 @@ public class MessageController {
         return "/site/letter";
     }
 
+    // 私信详情
     @RequestMapping(path = "/letter/detail/{conversationId}", method = RequestMethod.GET)
     public String getLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
         // 分页信息
@@ -109,15 +113,13 @@ public class MessageController {
 
     private List<Integer> getLetterIds(List<Message> letterList) {
         List<Integer> ids = new ArrayList<>();
-
         if (letterList != null) {
             for (Message message : letterList) {
-                if (hostHolder.getUser().getId() == message.getToId() && message.getStatus() == 0) {
+                if (hostHolder.getUser().getId() == message.getToId()) {
                     ids.add(message.getId());
                 }
             }
         }
-
         return ids;
     }
 
@@ -140,7 +142,14 @@ public class MessageController {
         message.setContent(content);
         message.setCreateTime(new Date());
         messageService.addMessage(message);
+        return CommunityUtil.getJSONString(0);
+    }
 
+    // 删除私信
+    @RequestMapping(path = "/letter/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteLetter(int id) {
+        messageService.deleteMessage(id);
         return CommunityUtil.getJSONString(0);
     }
 
