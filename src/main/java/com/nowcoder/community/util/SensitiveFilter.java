@@ -27,6 +27,7 @@ public class SensitiveFilter {
 
     @PostConstruct  // 这个注解表示，这是一个初始化的方法
     // 当容器实例化这个Bean之后，调用构造器之后，就会自动调用这个方法
+    // 服务启动初始化bean时构造器之后执行
     public void init() {
         try (
                 // 使用类加载器加载文件
@@ -45,7 +46,7 @@ public class SensitiveFilter {
     }
 
     /**
-     * 讲一个敏感词添加到前缀树上
+     * 将一个敏感词添加到前缀树上
      *
      * @param keyword 敏感词字符串
      */
@@ -143,7 +144,7 @@ public class SensitiveFilter {
         return !CharUtils.isAsciiAlphanumeric(c) && (c < 0x2E80 || c > 0x9FFF);
     }
 
-    // 前缀树
+    // 定义前缀树
     private class TrieNode {
 
         // 关键词结束标识
