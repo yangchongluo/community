@@ -47,4 +47,13 @@
         update discuss_post set comment_count = #{commentCount} where id = #{id}
     </update>
 
+    <select id="selectDiscussPostsByUser" resultType="DiscussPost">
+        select <include refid="selectFields"></include>
+        from discuss_post
+        where status != 2
+        and user_id = #{userId}
+        order by create_time desc
+        limit #{offset}, #{limit}
+    </select>
+
 </mapper>

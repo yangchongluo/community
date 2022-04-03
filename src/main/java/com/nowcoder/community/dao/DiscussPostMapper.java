@@ -21,4 +21,5 @@ public interface DiscussPostMapper {
 
     int updateCommentCount(int id, int commentCount);
 
+    List<DiscussPost> selectDiscussPostsByUser(int userId, int offset, int limit);
 }

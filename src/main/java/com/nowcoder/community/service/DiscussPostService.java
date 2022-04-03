@@ -1,6 +1,7 @@
 package com.nowcoder.community.service;
 
 import com.nowcoder.community.dao.DiscussPostMapper;
+import com.nowcoder.community.entity.Comment;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,11 @@ public class DiscussPostService {
     public int updateCommentCount(int id, int commentCount) {
         return discussPostMapper.updateCommentCount(id, commentCount);
     }
+
+
+    public List<DiscussPost> findUserDiscussPosts(int userId, int offset, int limit) {
+        return discussPostMapper.selectDiscussPostsByUser(userId, offset, limit);
+    }
+
 
 }
