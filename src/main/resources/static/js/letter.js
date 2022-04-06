@@ -13,7 +13,6 @@ function send_letter() {
 		{"toName":toName,"content":content},
 		function(data) {
 			data = $.parseJSON(data);
-
 			if(data.code == 0) {
 				$("#hintBody").text("发送成功!");
 			} else {
@@ -30,18 +29,6 @@ function send_letter() {
 }
 
 function delete_msg() {
-	var btn = this;
-	var id = $(btn).prev().val();
-	$.post(
-		CONTEXT_PATH + "/letter/delete",
-		{"id":id},
-		function(data) {
-			data = $.parseJSON(data);
-			if(data.code == 0) {
-				$(btn).parents(".media").remove();
-			} else {
-				alert(data.msg);
-			}
-		}
-	);
+	// TODO 删除数据
+	$(this).parents(".media").remove();
 }
