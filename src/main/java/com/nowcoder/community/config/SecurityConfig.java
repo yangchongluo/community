@@ -53,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                         AUTHORITY_MODERATOR
                 )
                 .antMatchers(
-                        "/discuss/delete"
+                        "/discuss/delete",
+                        "/data/**"
                 )
                 .hasAnyAuthority(
                         AUTHORITY_ADMIN
@@ -69,7 +70,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
                         String xRequestedWith = request.getHeader("x-requested-with");
                         if ("XMLHttpRequest".equals(xRequestedWith)) {
-                            // 异步请求，返回json
                             response.setContentType("application/plain;charset=utf-8");
                             PrintWriter writer = response.getWriter();
                             writer.write(CommunityUtil.getJSONString(403, "你还没有登录哦!"));
@@ -95,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
 
         // Security底层默认会拦截/logout请求,进行退出处理.
         // 覆盖它默认的逻辑,才能执行我们自己的退出代码.
-        http.logout().logoutUrl("/securitylogout"); // 设置了一个别的路径，让Security去处理这个路径
+        http.logout().logoutUrl("/securitylogout");
     }
 
 }
