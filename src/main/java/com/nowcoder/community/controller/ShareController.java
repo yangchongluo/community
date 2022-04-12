@@ -40,6 +40,9 @@ public class ShareController implements CommunityConstant {
     @Value("${wk.image.storage}")
     private String wkImageStorage;
 
+    @Value("${qiniu.bucket.share.url}")
+    private String shareBucketUrl;
+
     @RequestMapping(path = "/share", method = RequestMethod.GET)
     @ResponseBody
     public String share(String htmlUrl) {
@@ -56,11 +59,13 @@ public class ShareController implements CommunityConstant {
 
         // 返回访问路径
         Map<String, Object> map = new HashMap<>();
-        map.put("shareUrl", domain + contextPath + "/share/image/" + fileName);
+//        map.put("shareUrl", domain + contextPath + "/share/image/" + fileName);
+        map.put("shareUrl", shareBucketUrl + "/" + fileName);
 
         return CommunityUtil.getJSONString(0, null, map);
     }
 
+    // 废弃
     // 获取长图
     @RequestMapping(path = "/share/image/{fileName}", method = RequestMethod.GET)
     public void getShareImage(@PathVariable("fileName") String fileName, HttpServletResponse response) {
@@ -68,13 +73,12 @@ public class ShareController implements CommunityConstant {
             throw new IllegalArgumentException("文件名不能为空!");
         }
 
-        // 设定输出的是什么  图片/格式
         response.setContentType("image/png");
         File file = new File(wkImageStorage + "/" + fileName + ".png");
         try {
-            OutputStream os = response.getOutputStream(); // 字节流
+            OutputStream os = response.getOutputStream();
             FileInputStream fis = new FileInputStream(file);
-            byte[] buffer = new byte[1024]; // 设置的缓冲区
+            byte[] buffer = new byte[1024];
             int b = 0;
             while ((b = fis.read(buffer)) != -1) {
                 os.write(buffer, 0, b);
