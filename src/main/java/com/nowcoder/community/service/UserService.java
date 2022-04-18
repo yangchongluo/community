@@ -30,7 +30,7 @@ public class UserService implements CommunityConstant {
     private MailClient mailClient;
 
     @Autowired
-    private TemplateEngine templateEngine;
+    private TemplateEngine templateEngine; // 模板引擎
 
     @Value("${community.path.domain}")
     private String domain;
@@ -53,6 +53,12 @@ public class UserService implements CommunityConstant {
         return user;
     }
 
+    /**
+     * 注册方法
+     *
+     * @param user 用户对象
+     * @return
+     */
     public Map<String, Object> register(User user) {
         Map<String, Object> map = new HashMap<>();
 
@@ -88,11 +94,12 @@ public class UserService implements CommunityConstant {
         }
 
         // 注册用户
-        user.setSalt(CommunityUtil.generateUUID().substring(0, 5));
-        user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt()));
-        user.setType(0);
-        user.setStatus(0);
-        user.setActivationCode(CommunityUtil.generateUUID());
+        user.setSalt(CommunityUtil.generateUUID().substring(0, 5)); // 生成随机盐
+        user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt())); // 密码加密
+        user.setType(0); // 把用户设置为普通用户
+        user.setStatus(0); // 0是未激活状态
+        user.setActivationCode(CommunityUtil.generateUUID()); // 随机生成激活码
+        // 随机给个头像
         user.setHeaderUrl(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
         user.setCreateTime(new Date());
         userMapper.insertUser(user);
@@ -109,6 +116,12 @@ public class UserService implements CommunityConstant {
         return map;
     }
 
+    /**
+     * 激活账号
+     * @param userId
+     * @param code
+     * @return
+     */
     public int activation(int userId, String code) {
         User user = userMapper.selectById(userId);
         if (user.getStatus() == 1) {

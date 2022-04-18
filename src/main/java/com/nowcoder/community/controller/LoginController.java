@@ -57,6 +57,12 @@ public class LoginController implements CommunityConstant {
         return "/site/login";
     }
 
+    /**
+     * 注册请求
+     * @param model
+     * @param user
+     * @return
+     */
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public String register(Model model, User user) {
         Map<String, Object> map = userService.register(user);
@@ -72,6 +78,13 @@ public class LoginController implements CommunityConstant {
         }
     }
 
+    /**
+     * 激活
+     * @param model
+     * @param userId
+     * @param code
+     * @return
+     */
     // http://localhost:8080/community/activation/101/code
     @RequestMapping(path = "/activation/{userId}/{code}", method = RequestMethod.GET)
     public String activation(Model model, @PathVariable("userId") int userId, @PathVariable("code") String code) {
@@ -89,6 +102,10 @@ public class LoginController implements CommunityConstant {
         return "/site/operate-result";
     }
 
+    /**
+     * 生成验证码
+     * @param response
+     */
     @RequestMapping(path = "/kaptcha", method = RequestMethod.GET)
     public void getKaptcha(HttpServletResponse response/*, HttpSession session*/) {
         // 生成验证码
@@ -111,7 +128,7 @@ public class LoginController implements CommunityConstant {
         // 将突图片输出给浏览器
         response.setContentType("image/png");
         try {
-            OutputStream os = response.getOutputStream();
+            OutputStream os = response.getOutputStream(); // 获得字节流
             ImageIO.write(image, "png", os);
         } catch (IOException e) {
             logger.error("响应验证码失败:" + e.getMessage());

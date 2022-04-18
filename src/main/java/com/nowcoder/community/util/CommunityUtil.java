@@ -11,20 +11,32 @@ import java.util.UUID;
 
 public class CommunityUtil {
 
-    // 生成随机字符串
+
+    /***
+     * 生成随机字符串
+     * @return
+     */
     public static String generateUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    // MD5加密
-    // hello -> abc123def456
-    // hello + 3e4a8 -> abc123def456abc
+
+    /**
+     * MD5加密
+     *
+     * @param key 给字符串使用MD5加密算法加密
+     * @return 加密后的字符串
+     * <p>
+     * hello -> abc123def456
+     * hello + 3e4a8 -> abc123def456abc
+     */
     public static String md5(String key) {
         if (StringUtils.isBlank(key)) {
             return null;
         }
         return DigestUtils.md5DigestAsHex(key.getBytes());
     }
+
 
     public static String getJSONString(int code, String msg, Map<String, Object> map) {
         JSONObject json = new JSONObject();
