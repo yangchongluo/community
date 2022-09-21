@@ -116,6 +116,8 @@ public class LoginController implements CommunityConstant {
         // session.setAttribute("kaptcha", text);
 
         // 验证码的归属
+        // 由于这个时候用户还没有登录，我们是没有办法通过用户的 id 来唯一的对应它的验证码的。
+        // 所以这个时候我们考虑生成一个随机的 id 来暂时的代替这个用户
         String kaptchaOwner = CommunityUtil.generateUUID();
         Cookie cookie = new Cookie("kaptchaOwner", kaptchaOwner);
         cookie.setMaxAge(60);
@@ -125,7 +127,7 @@ public class LoginController implements CommunityConstant {
         String redisKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
         redisTemplate.opsForValue().set(redisKey, text, 60, TimeUnit.SECONDS);
 
-        // 将突图片输出给浏览器
+        // 将图片输出给浏览器
         response.setContentType("image/png");
         try {
             OutputStream os = response.getOutputStream(); // 获得字节流

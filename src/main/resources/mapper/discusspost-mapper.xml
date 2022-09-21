@@ -15,12 +15,16 @@
     </sql>
 
     <select id="selectDiscussPosts" resultType="DiscussPost">
-        select <include refid="selectFields"></include>
+        select
+        <include refid="selectFields"></include>
         from discuss_post
         where status != 2
+--       当传入的userId=0时，分页查找所有的用户的帖子
+--      当传入的userId!=0时，分页查找指定用户的帖子
         <if test="userId!=0">
             and user_id = #{userId}
         </if>
+--         orderMode 排行方式，0为按照创建时间排序，1位按照热度(score)排序
         <if test="orderMode==0">
             order by type desc, create_time desc
         </if>

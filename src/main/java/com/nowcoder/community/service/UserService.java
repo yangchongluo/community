@@ -168,7 +168,7 @@ public class UserService implements CommunityConstant {
             return map;
         }
 
-        // 生成登录凭证
+        // 登录成功后，为用户生成登录凭证
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(user.getId());
         loginTicket.setTicket(CommunityUtil.generateUUID());
@@ -176,6 +176,7 @@ public class UserService implements CommunityConstant {
         loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000));
 //        loginTicketMapper.insertLoginTicket(loginTicket);
 
+        // 登录凭证缓存到Redis中
         String redisKey = RedisKeyUtil.getTicketKey(loginTicket.getTicket());
         redisTemplate.opsForValue().set(redisKey, loginTicket);
 
